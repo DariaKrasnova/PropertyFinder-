@@ -69,6 +69,21 @@ export default class SearchPage extends Component {
         }
       }
 
+      onLocationPressed() {
+        navigator.geolocation.getCurrentPosition(
+          location => {
+            let search = location.coords.latitude + ',' + location.coords.longitude;
+            this.setState({ searchString: search });
+            let query = urlForQueryAndPage('centre_point', search, 1);
+            this._executeQuery(query);
+          },
+          error => {
+            this.setState({
+              message: 'There was a problem with obtaining your location: ' + error
+            });
+          });
+      }
+
     render() {
         spinner = this.state.isLoading ?
         ( <ActivityIndicator
@@ -100,6 +115,7 @@ export default class SearchPage extends Component {
          </View>
         <View style={styles.container3}>
                 <TouchableHighlight style={styles.button2}
+                        onPress={this.onLocationPressed.bind(this)}
                         underlayColor='#99d9f4'>
                         <Text style={styles.buttonText}>location</Text>   
                 </TouchableHighlight>
